@@ -14,37 +14,48 @@ function Product() {
   const [isEditing, setIsEditing] = useState(false);
   const [editId, setEditId] = useState(null);
 
+  // 🔔 Message state
+  const [message, setMessage] = useState("");
+  const [msgType, setMsgType] = useState(""); // success | error
+
   const CAT_API = "http://localhost:5050/categories";
   const PROD_API = "http://localhost:5050/products";
 
-  // LOAD categories + products
+  // 🔔 Show message helper (✅ MUST BE ABOVE useEffect)
+  const showMessage = (msg, type = "success") => {
+    setMessage(msg);
+    setMsgType(type);
+    setTimeout(() => setMessage(""), 3000);
+  };
+
+  // ✅ Load categories & products (ESLint-safe)
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const catRes = await fetch(CAT_API);
-        const catData = await catRes.json();
-        console.log("Categories:", catData);
-        setCategories(catData);
+        const c = await fetch(CAT_API);
+        setCategories(await c.json());
 
-        const prodRes = await fetch(PROD_API);
-        const prodData = await prodRes.json();
-        setProducts(prodData);
+        const p = await fetch(PROD_API);
+        setProducts(await p.json());
       } catch (err) {
-        console.error("Fetch error:", err);
+        console.error(err);
+        showMessage("Failed to load data", "error");
       }
     };
 
     fetchData();
   }, []);
 
+  // 🔁 Reload only products
   const reloadProducts = async () => {
     const res = await fetch(PROD_API);
     setProducts(await res.json());
   };
 
+  // ➕ / ✏️ ADD or UPDATE
   const saveProduct = async () => {
     if (!name || !categoryId) {
-      alert("Name & Category required");
+      showMessage("Name and Category are required", "error");
       return;
     }
 
@@ -56,24 +67,31 @@ function Product() {
       category_id: categoryId,
     };
 
-    if (isEditing) {
-      await fetch(`${PROD_API}/${editId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-    } else {
-      await fetch(PROD_API, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-    }
+    try {
+      if (isEditing) {
+        await fetch(`${PROD_API}/${editId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        showMessage("Product updated successfully");
+      } else {
+        await fetch(PROD_API, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        showMessage("Product added successfully");
+      }
 
-    resetForm();
-    reloadProducts();
+      resetForm();
+      reloadProducts();
+    } catch {
+      showMessage("Operation failed", "error");
+    }
   };
 
+  // ✏️ EDIT
   const editProduct = (p) => {
     setIsEditing(true);
     setEditId(p.id);
@@ -84,9 +102,15 @@ function Product() {
     setCategoryId(p.category_id);
   };
 
+  // 🗑 DELETE
   const deleteProduct = async (id) => {
-    await fetch(`${PROD_API}/${id}`, { method: "DELETE" });
-    reloadProducts();
+    try {
+      await fetch(`${PROD_API}/${id}`, { method: "DELETE" });
+      showMessage("Product deleted successfully");
+      reloadProducts();
+    } catch {
+      showMessage("Delete failed", "error");
+    }
   };
 
   const resetForm = () => {
@@ -103,18 +127,18 @@ function Product() {
     <div className="container">
       <h2>{isEditing ? "Edit Product" : "Add Product"}</h2>
 
+      {/* 🔔 MESSAGE */}
+      {message && <div className={`msg ${msgType}`}>{message}</div>}
+
       <input placeholder="Name" value={name} onChange={(e) => setName(e.target.value)} />
       <input placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
-      <input placeholder="Code" value={productCode} onChange={(e) => setProductCode(e.target.value)} />
-      <input type="number" placeholder="Qty" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+      <input placeholder="Product Code" value={productCode} onChange={(e) => setProductCode(e.target.value)} />
+      <input type="number" placeholder="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
 
-      {/* CATEGORY DROPDOWN */}
       <select value={categoryId} onChange={(e) => setCategoryId(e.target.value)}>
         <option value="">Select Category</option>
         {categories.map((cat) => (
-          <option key={cat.id} value={cat.id}>
-            {cat.name}
-          </option>
+          <option key={cat.id} value={cat.id}>{cat.name}</option>
         ))}
       </select>
 
@@ -122,12 +146,16 @@ function Product() {
         {isEditing ? "Update" : "Add"}
       </button>
 
-      {isEditing && <button onClick={resetForm}>Cancel</button>}
+      {isEditing && (
+        <button onClick={resetForm} style={{ marginLeft: 10 }}>
+          Cancel
+        </button>
+      )}
 
       <hr />
 
       <h2>Product List</h2>
-      <table>
+      <table border="1" cellPadding="10">
         <thead>
           <tr>
             <th>Name</th>
@@ -144,9 +172,17 @@ function Product() {
               <td>{p.product_code}</td>
               <td>{p.quantity}</td>
               <td>{p.category_name}</td>
-              <td>
-                <FaEdit onClick={() => editProduct(p)} style={{ cursor: "pointer" }} />
-                <FaTrash onClick={() => deleteProduct(p.id)} style={{ cursor: "pointer", marginLeft: 10 }} />
+              <td style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+                <button onClick={() => editProduct(p)} title="Edit">
+                  <FaEdit />
+                </button>
+                <button
+                  className="delete-btn"
+                  onClick={() => deleteProduct(p.id)}
+                  title="Delete"
+                >
+                  <FaTrash />
+                </button>
               </td>
             </tr>
           ))}
