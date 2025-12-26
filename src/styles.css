@@ -1,0 +1,85 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f5f7fa;
+  margin: 0;
+  padding: 0;
+}
+
+
+.container {
+  max-width: 900px;
+  margin: 30px auto;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 6px;
+}
+
+
+h1, h2 {
+  color: #333;
+}
+
+
+input,
+select {
+  width: 100%;
+  padding: 8px;
+  margin-top: 6px;
+  margin-bottom: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: #1976d2;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #125aa0;
+}
+
+
+button svg {
+  font-size: 16px;
+}
+
+.delete-btn {
+  background: #d32f2f;
+}
+
+.delete-btn:hover {
+  background: #9a0007;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+table th {
+  background: #1976d2;
+  color: white;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+table tr:nth-child(even) {
+  background: #f2f2f2;
+}
