@@ -1,22 +1,14 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./auth/Login";
-import Register from "./auth/Register";
+import Category from "./components/category.jsx";
+import Product from "./components/product.jsx";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        {/* Default route → Login */}
-        <Route path="/" element={<Navigate to="/login" />} />
-
-        {/* Auth */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
-    </BrowserRouter>
+    <div className="container">
+      <h1>Product & Category CRUD App</h1>
+      <Category />
+      <hr />
+      <Product />
+    </div>
   );
 }
 

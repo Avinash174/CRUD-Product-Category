@@ -1,289 +1,68 @@
-/* ===== RESET ===== */
-* {
-  box-sizing: border-box;
-}
-
-/* ===== ROOT ===== */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
   color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #242424;
+
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* ===== BODY (FIXED) ===== */
-body {
-  margin: 0;
-  min-width: 320px;
-  min-height: 100vh;
-  background: #f4f6f8;
-}
-
-/* ===== LINKS ===== */
 a {
   font-weight: 500;
   color: #646cff;
-  text-decoration: none;
+  text-decoration: inherit;
 }
 a:hover {
   color: #535bf2;
 }
 
-/* ===== AUTH LAYOUT ===== */
-.auth-wrapper {
-  min-height: 100vh;
+body {
+  margin: 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(120deg, #646cff, #8f94fb);
+  place-items: center;
+  min-width: 320px;
+  min-height: 100vh;
 }
 
-.auth-card {
-  width: 100%;
-  max-width: 380px;
-  background: #ffffff;
-  padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-  text-align: center;
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
 }
 
-/* ===== AUTH TEXT ===== */
-.auth-card h2 {
-  margin-bottom: 5px;
+button {
+  border-radius: 8px;
+  border: 1px solid transparent;
+  padding: 0.6em 1.2em;
+  font-size: 1em;
+  font-weight: 500;
+  font-family: inherit;
+  background-color: #1a1a1a;
+  cursor: pointer;
+  transition: border-color 0.25s;
 }
-
-.auth-subtitle {
-  font-size: 14px;
-  color: #666;
-  margin-bottom: 20px;
-}
-
-/* ===== INPUTS ===== */
-.auth-card input {
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 12px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
-.auth-card input:focus {
-  outline: none;
+button:hover {
   border-color: #646cff;
 }
-
-/* ===== BUTTON ===== */
-.auth-card button {
-  width: 100%;
-  padding: 12px;
-  background: #646cff;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  font-size: 15px;
-  cursor: pointer;
-  transition: background 0.2s;
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
 }
 
-.auth-card button:hover {
-  background: #535bf2;
-}
-
-/* ===== AUTH LINKS ===== */
-.auth-link {
-  margin-top: 15px;
-  font-size: 14px;
-}
-
-.auth-link span {
-  color: #646cff;
-  cursor: pointer;
-  font-weight: 500;
-}
-
-.auth-link span:hover {
-  text-decoration: underline;
-}
-
-/* ===== DARK MODE ===== */
-@media (prefers-color-scheme: dark) {
-  body {
-    background: #1e1e1e;
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
   }
-
-  .auth-card {
-    background: #2a2a2a;
-    color: #fff;
+  a:hover {
+    color: #747bff;
   }
-
-  .auth-card input {
-    background: #333;
-    color: #fff;
-    border: 1px solid #555;
+  button {
+    background-color: #f9f9f9;
   }
 }
-/* =========================
-   SHARED LAYOUT
-========================= */
-.page {
-  max-width: 1100px;
-  margin: 32px auto;
-  padding: 0 16px;
-}
-
-.card {
-  background: #ffffff;
-  border-radius: 14px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-  padding: 22px;
-  margin-bottom: 24px;
-}
-
-.card-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 14px;
-}
-
-.muted {
-  color: #6b7280;
-  font-size: 14px;
-}
-
-/* =========================
-   FORMS
-========================= */
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.form-grid.single {
-  grid-template-columns: 1fr;
-}
-
-.form-control {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-control label {
-  font-size: 13px;
-  color: #374151;
-  font-weight: 600;
-}
-
-.form-control input,
-.form-control select {
-  padding: 12px 12px;
-  border-radius: 10px;
-  border: 1px solid #d1d5db;
-  font-size: 14px;
-  transition: border 0.2s, box-shadow 0.2s;
-}
-
-.form-control input:focus,
-.form-control select:focus {
-  outline: none;
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
-}
-
-/* =========================
-   BUTTONS
-========================= */
-.btn {
-  padding: 12px 16px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  border: none;
-  cursor: pointer;
-}
-
-.btn-primary {
-  background: linear-gradient(135deg, #6366f1, #8b5cf6);
-  color: #fff;
-}
-
-.btn-primary:hover {
-  opacity: 0.95;
-}
-
-.btn-secondary {
-  background: #f3f4f6;
-  color: #111827;
-}
-
-/* =========================
-   TABLES
-========================= */
-.table-wrap {
-  overflow-x: auto;
-}
-
-.table {
-  width: 100%;
-  border-collapse: collapse;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.table thead {
-  background: #f3f4f6;
-}
-
-.table th {
-  text-align: left;
-  font-size: 13px;
-  color: #374151;
-  padding: 14px;
-  font-weight: 700;
-}
-
-.table td {
-  padding: 14px;
-  font-size: 14px;
-  border-bottom: 1px solid #e5e7eb;
-}
-
-.table tbody tr:hover {
-  background: #f9fafb;
-}
-
-/* =========================
-   CATEGORY CARDS
-========================= */
-.category-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 16px;
-}
-
-.category-card {
-  background: linear-gradient(135deg, #eef2ff, #faf5ff);
-  border-radius: 16px;
-  padding: 18px;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.06);
-}
-
-.category-card h3 {
-  margin: 0 0 6px;
-  font-size: 18px;
-}
-
-.category-card p {
-  margin: 0 0 12px;
-  color: #6b7280;
-  font-size: 14px;
-}
-
