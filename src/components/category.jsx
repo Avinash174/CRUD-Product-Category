@@ -1,149 +1,99 @@
 import { useEffect, useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+
+const CAT_API = "http://localhost:5050/categories";
 
 function Category() {
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
-
-  const [isEditing, setIsEditing] = useState(false);
-  const [editId, setEditId] = useState(null);
-
-  const [message, setMessage] = useState("");
-  const [msgType, setMsgType] = useState(""); // success | error
-
-  const API = "http://localhost:5050/categories";
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCategories = async () => {
-      const res = await fetch(API);
+      const res = await fetch(CAT_API);
       setCategories(await res.json());
     };
     fetchCategories();
   }, []);
 
-  const reloadCategories = async () => {
-    const res = await fetch(API);
-    setCategories(await res.json());
-  };
-
-  const showMessage = (msg, type = "success") => {
-    setMessage(msg);
-    setMsgType(type);
-    setTimeout(() => setMessage(""), 3000);
-  };
-
-  const saveCategory = async () => {
+  const addCategory = async () => {
     if (!name.trim()) {
-      showMessage("Category name required", "error");
+      alert("Category name required");
       return;
     }
 
-    try {
-      if (isEditing) {
-        await fetch(`${API}/${editId}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, description }),
-        });
-        showMessage("Category updated successfully");
-      } else {
-        await fetch(API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, description }),
-        });
-        showMessage("Category added successfully");
-      }
+    await fetch(CAT_API, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, description }),
+    });
 
-      resetForm();
-      reloadCategories();
-    } catch {
-      showMessage("Operation failed", "error");
-    }
-  };
-
-  const deleteCategory = async (id) => {
-    try {
-      await fetch(`${API}/${id}`, { method: "DELETE" });
-      showMessage("Category deleted successfully");
-      reloadCategories();
-    } catch {
-      showMessage("Delete failed", "error");
-    }
-  };
-
-  const editCategory = (cat) => {
-    setIsEditing(true);
-    setEditId(cat.id);
-    setName(cat.name);
-    setDescription(cat.description);
-  };
-
-  const resetForm = () => {
-    setIsEditing(false);
-    setEditId(null);
     setName("");
     setDescription("");
+
+    const res = await fetch(CAT_API);
+    setCategories(await res.json());
   };
 
   return (
-    <div className="container">
-      <h2>{isEditing ? "Edit Category" : "Add Category"}</h2>
+    <div className="page">
+      {/* ADD CATEGORY */}
+      <div className="card">
+        <div className="card-title">Add Category</div>
+        <p className="muted">Create and manage product categories</p>
 
-      {/* MESSAGE */}
-      {message && (
-        <div className={`msg ${msgType}`}>{message}</div>
-      )}
+        <div className="form-grid single">
+          <div className="form-control">
+            <label>Category Name</label>
+            <input
+              placeholder="e.g. Electronics"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+          </div>
 
-      <input
-        placeholder="Category Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
+          <div className="form-control">
+            <label>Description</label>
+            <input
+              placeholder="Short description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+            />
+          </div>
 
-      <input
-        placeholder="Description"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
+          <button className="btn btn-primary" onClick={addCategory}>
+            Add Category
+          </button>
+        </div>
+      </div>
 
-      <button onClick={saveCategory}>
-        {isEditing ? "Update" : "Add"}
-      </button>
+      {/* CATEGORY LIST */}
+      <div className="card">
+        <div className="card-title">Categories</div>
 
-      {isEditing && (
-        <button onClick={resetForm} style={{ marginLeft: 10 }}>
-          Cancel
-        </button>
-      )}
+        {categories.length === 0 ? (
+          <p className="muted">No categories added yet</p>
+        ) : (
+          <div className="category-grid">
+            {categories.map((c) => (
+              <div className="category-card" key={c.id}>
+                <h3>{c.name}</h3>
+                <p>{c.description || "No description"}</p>
 
-      <hr />
-
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {categories.map((cat) => (
-            <tr key={cat.id}>
-              <td>{cat.name}</td>
-              <td>{cat.description}</td>
-              <td>
-                <FaEdit onClick={() => editCategory(cat)} />
-                <FaTrash
-                  onClick={() => deleteCategory(cat.id)}
-                  style={{ marginLeft: 10, cursor: "pointer" }}
-                />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+                <button
+                  className="btn btn-secondary"
+                  onClick={() =>
+                    navigate(`/products?category=${c.id}&name=${c.name}`)
+                  }
+                >
+                  View Products
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
